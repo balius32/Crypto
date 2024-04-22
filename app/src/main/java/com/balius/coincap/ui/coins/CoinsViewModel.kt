@@ -19,6 +19,11 @@ class CoinsViewModel(
     val coins : LiveData<List<Data>>
         get() = _Coins
 
+
+    private val _isError = MutableLiveData<Boolean>()
+    val isError : LiveData<Boolean>
+        get() = _isError
+
     init {
         getCoins()
     }
@@ -36,6 +41,7 @@ class CoinsViewModel(
 
             }catch (e : Exception){
                 Log.e("data error", e.message.toString())
+                _isError.value = true
             }
 
         }

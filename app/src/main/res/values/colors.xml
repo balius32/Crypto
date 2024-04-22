@@ -8,6 +8,8 @@
     <color name="lighter_black">#333333</color>
 
     <color name="yellow">#FFD700</color>
+    <color name="orange">#ed8845</color>
+    <color name="deep_orange">#ff6600</color>
 
     <color name="positive_green">#66ff33</color>
     <color name="negative_red">#a70c0c</color>

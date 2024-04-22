@@ -24,7 +24,7 @@ class CoinsAdapter(
 ) : RecyclerView.Adapter<CoinsAdapter.CoinsVh>(){
 
     interface CoinActionListener{
-        fun onCoinSelect(coinName : String)
+        fun onCoinSelect(coinId : String)
     }
 
 
@@ -58,7 +58,7 @@ class CoinsAdapter(
         holder.txtSymbol.text = coin.symbol
 
 
-        // Parse the string to double
+
         val coinPrice = coin.priceUsd?.toDouble()
         val df = DecimalFormat("#,###.##")
         val formattedNumber = df.format(coinPrice)
@@ -66,9 +66,10 @@ class CoinsAdapter(
         holder.txtPrice.text = "$$formattedNumber"
 
 
+
         val changePrice = coin.changePercent24Hr?.toDouble()
 
-        // Truncate the number to two decimal places without rounding
+
         val truncatedNumber = String.format("%.2f", changePrice).toDouble()
 
 
@@ -92,7 +93,7 @@ class CoinsAdapter(
 
 
         holder.layout.setOnClickListener{
-            listener.onCoinSelect(coin.name.toString())
+            listener.onCoinSelect(coin.id.toString())
         }
 
 

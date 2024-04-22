@@ -45,7 +45,8 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/margin8"
                 android:src="@drawable/baseline_arrow_back_24"
-                android:tint="@color/yellow" />
+                android:tint="@color/yellow"
+                android:padding="@dimen/margin8"/>
         </RelativeLayout>
     </androidx.appcompat.widget.Toolbar>
 
@@ -53,9 +54,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar"
-        android:background="@color/darker_gray">
+        android:background="#333333">
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -66,44 +67,52 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="@dimen/margin16"
-                android:layout_marginTop="@dimen/margin16"
+                android:layout_marginTop="16dp"
                 android:text="Bitcoin"
                 android:textColor="@color/white"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/txt_rank"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin8"
-                android:layout_marginTop="@dimen/margin16"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
                 android:layout_toEndOf="@id/txt_name"
                 android:background="@drawable/shape_text"
                 android:padding="3dp"
                 android:text="#1"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                app:layout_constraintStart_toEndOf="@+id/txt_name"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/txt_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/txt_name"
-                android:layout_marginStart="@dimen/margin16"
-                android:layout_marginTop="20dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:text="$62,456.9"
                 android:textColor="@color/white"
                 android:textSize="32sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_name" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/img_dropdown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@id/txt_price"
-                android:layout_marginStart="@dimen/margin8"
-                android:layout_marginTop="@dimen/margin8"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="4dp"
                 android:layout_toEndOf="@id/txt_price"
-                android:src="@drawable/baseline_arrow_drop_down_24" />
+                android:src="@drawable/baseline_arrow_drop_down_24"
+                app:layout_constraintEnd_toStartOf="@+id/txt_change_percent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_name" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/img_dropup"
@@ -111,23 +120,195 @@
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@id/txt_price"
                 android:layout_marginStart="@dimen/margin8"
-                android:layout_marginTop="@dimen/margin8"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="4dp"
                 android:layout_toEndOf="@id/txt_price"
                 android:src="@drawable/baseline_arrow_drop_up_24"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@+id/txt_change_percent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_name" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/txt_change_percent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@id/img_dropdown"
+                android:layout_marginTop="20dp"
                 android:layout_toEndOf="@id/img_dropdown"
                 android:text="0/32 %"
                 android:textColor="@color/negative_red"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.64"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_name" />
+
+            <RelativeLayout
+                android:id="@+id/rel_chart"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_price"
+                android:background="#e6e6e6">
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/lineChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
 
 
-        </RelativeLayout>
+            </RelativeLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/lbl_stats"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="stats"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="24sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rel_chart" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:elevation="@dimen/margin8"
+                app:cardCornerRadius="@dimen/margin8"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/lbl_stats">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#595959"
+                    android:padding="@dimen/margin8">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/lbl_marketcap"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin8"
+                        android:layout_marginTop="8dp"
+                        android:text="Market Cap"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txt_marketcap"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="@dimen/margin8"
+                        android:text="$78878735"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toEndOf="@+id/lbl_marketcap"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/lbl_supply"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginStart="@dimen/margin8"
+                        android:layout_marginTop="16dp"
+                        android:text="Available Supply"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/lbl_marketcap" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txt_supply"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/txt_marketcap"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="@dimen/margin8"
+                        android:text="788787"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toEndOf="@+id/lbl_supply"
+                        app:layout_constraintTop_toBottomOf="@id/txt_marketcap" />
+
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/lbl_max_supply"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginStart="@dimen/margin8"
+                        android:layout_marginTop="16dp"
+                        android:text="Max Supply"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/lbl_supply" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txt_max_supply"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/txt_marketcap"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="@dimen/margin8"
+                        android:text="78878447"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toEndOf="@+id/lbl_max_supply"
+                        app:layout_constraintTop_toBottomOf="@id/txt_supply"/>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/lbl_volume"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginStart="@dimen/margin8"
+                        android:layout_marginTop="16dp"
+                        android:text="Volume 24h"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/lbl_max_supply" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txt_volume"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/txt_marketcap"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="@dimen/margin8"
+                        android:text="78815151547"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toEndOf="@+id/lbl_volume"
+                        app:layout_constraintTop_toBottomOf="@id/txt_max_supply"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.drawerlayout.widget.DrawerLayout>
 
 </RelativeLayout>
