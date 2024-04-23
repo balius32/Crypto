@@ -45,6 +45,9 @@ class CoinsFragment : Fragment(), CoinsAdapter.CoinActionListener {
 
 
         viewModel.coins.observe(viewLifecycleOwner) {
+            binding?.swipeRefreshLayout?.isRefreshing = false
+
+            binding?.progress?.visibility = View.GONE
 
             val adapter = CoinsAdapter(requireActivity(), it, this)
             binding?.recycleCoins?.adapter = adapter
@@ -79,6 +82,11 @@ class CoinsFragment : Fragment(), CoinsAdapter.CoinActionListener {
         findNavController().navigate(action)
 
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

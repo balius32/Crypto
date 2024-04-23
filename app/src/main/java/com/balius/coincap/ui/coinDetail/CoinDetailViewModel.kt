@@ -25,41 +25,41 @@ class CoinDetailViewModel(
         get() = _chartData
 
 
+    private val _isError = MutableLiveData<Boolean>()
+    val isError: LiveData<Boolean>
+        get() = _isError
+
 
     fun getDetails(coinName: String) {
         viewModelScope.launch {
             try {
-                Log.e("detail Error", "hi1")
 
-                val result = withContext(Dispatchers.IO){
-                   val coinDetail= repository.getCoinDetail(coinName)
+
+                val result = withContext(Dispatchers.IO) {
+                    val coinDetail = repository.getCoinDetail(coinName)
                     coinDetail
                 }
                 _detail.value = result
 
             } catch (e: Exception) {
-
-                Log.e("detail Error", e.message.toString())
+                _isError.value = true
 
             }
         }
     }
 
 
-    fun getChartDetail(coinName: String,duration : String) {
+    fun getChartDetail(coinName: String, duration: String) {
         viewModelScope.launch {
             try {
-                val result = withContext(Dispatchers.IO){
-                    val chart= repository.getCoinChartData(coinName,duration)
+                val result = withContext(Dispatchers.IO) {
+                    val chart = repository.getCoinChartData(coinName, duration)
                     chart
                 }
-                    _chartData.value = result
+                _chartData.value = result
 
             } catch (e: Exception) {
-                //todo handle error
-
-                Log.e("chart data Error", e.message.toString())
-
+               _isError.value = true
             }
         }
     }

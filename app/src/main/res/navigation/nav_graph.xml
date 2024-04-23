@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/coinsFragment">
+    app:startDestination="@id/splashFragment">
 
     <fragment
         android:id="@+id/coinsFragment"
@@ -23,5 +23,14 @@
         <argument
             android:name="coin"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.balius.coincap.ui.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_coinsFragment"
+            app:destination="@id/coinsFragment" />
     </fragment>
 </navigation>

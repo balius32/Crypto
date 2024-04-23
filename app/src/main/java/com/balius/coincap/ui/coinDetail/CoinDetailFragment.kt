@@ -3,13 +3,18 @@ package com.balius.coincap.ui.coinDetail
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.balius.coincap.R
 import com.balius.coincap.databinding.FragmentCoinDetailBinding
 import com.balius.coincap.model.model.chart.ChartData
@@ -52,6 +57,7 @@ class CoinDetailFragment : Fragment() {
         viewModel.getChartDetail(coinName, "d1")
 
         viewModel.detail.observe(viewLifecycleOwner) {
+            binding?.swipeRefreshLayout?.isRefreshing = false
             binding?.txtName?.text = it.name
             binding?.txtSymbol?.text = it.symbol
             binding?.txtRank?.text = it.rank
@@ -88,11 +94,41 @@ class CoinDetailFragment : Fragment() {
         }
 
         viewModel.chartData.observe(viewLifecycleOwner) {
+            binding?.swipeRefreshLayout?.isRefreshing = false
+            binding?.progress?.visibility = View.GONE
             showChart(it, binding!!.lineChart)
         }
 
-        binding?.imgBack?.setOnClickListener{
+        binding?.imgBack?.setOnClickListener {
             findNavController().popBackStack()
+        }
+
+        viewModel.isError.observe(viewLifecycleOwner){
+            Toast.makeText(requireContext(),"Error pls refresh",Toast.LENGTH_SHORT).show()
+        }
+
+
+
+
+        binding?.swipeRefreshLayout?.setOnRefreshListener {
+            val isScrolledToTop = binding?.scrollView?.canScrollVertically(-1)
+
+            // If the ScrollView is not scrolled to the top, don't trigger the refresh
+            if (!isScrolledToTop!!) {
+
+                binding?.swipeRefreshLayout?.postDelayed(
+                    {
+                        viewModel.getDetails(coinName)
+                        viewModel.getChartDetail(coinName, "d1")
+                        // Stop the refreshing animation
+                        binding?.swipeRefreshLayout?.isRefreshing = false
+                    },
+                    2000
+                ) // Simulate a delay of 2000 milliseconds (2 seconds) before stopping the refreshing animation
+            } else {
+                // If the ScrollView is scrolled to the top, don't trigger the refresh action
+                binding?.swipeRefreshLayout?.isRefreshing = false
+            }
         }
 
 
@@ -170,6 +206,7 @@ class CoinDetailFragment : Fragment() {
             // Convert timestamp to formatted date string
             val date = Date(value.toLong())
             return dateFormat.format(date)
-        }}
+        }
+    }
 
 }
