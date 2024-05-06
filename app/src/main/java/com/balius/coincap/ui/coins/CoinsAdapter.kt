@@ -9,12 +9,9 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.Recycler
 import com.balius.coincap.R
-import com.balius.coincap.model.model.Data
+import com.balius.coincap.model.model.Coins.Data
 import java.text.DecimalFormat
 
 class CoinsAdapter(

@@ -1,4 +1,4 @@
-package com.balius.coincap.model.model
+package com.balius.coincap.model.model.Coins
 
 import com.google.gson.annotations.SerializedName
 

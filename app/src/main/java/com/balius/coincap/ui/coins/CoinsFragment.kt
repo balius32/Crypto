@@ -38,6 +38,8 @@ class CoinsFragment : Fragment(), CoinsAdapter.CoinActionListener {
 
         viewModel.isError.observe(viewLifecycleOwner) {
             if (it) {
+                binding?.swipeRefreshLayout?.isRefreshing = false
+                binding?.progress?.visibility = View.GONE
                 Toast.makeText(requireContext(), "Error pls refresh", Toast.LENGTH_LONG).show()
             }
         }
@@ -53,23 +55,31 @@ class CoinsFragment : Fragment(), CoinsAdapter.CoinActionListener {
             binding?.recycleCoins?.adapter = adapter
             binding?.recycleCoins?.layoutManager =
                 LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
-
-
             binding?.swipeRefreshLayout?.isRefreshing = false
 
         }
 
         binding?.swipeRefreshLayout?.setOnRefreshListener {
-            if ((binding?.recycleCoins?.layoutManager as LinearLayoutManager)
-                    .findFirstCompletelyVisibleItemPosition() == 0
-            ) {
-                // Call your refresh function
-                viewModel.getCoins()
 
-            } else {
-                // Scroll RecyclerView to the top first
-                binding?.recycleCoins?.smoothScrollToPosition(0)
+            if (binding!!.recycleCoins.layoutManager == null ) {
+                // RecyclerView is empty, so refresh
+                viewModel.getCoins()
             }
+            else {
+                // RecyclerView is not empty, scroll to the top first
+                if ((binding!!.recycleCoins.layoutManager as LinearLayoutManager)
+                        .findFirstCompletelyVisibleItemPosition() == 0
+                ) {
+                    // Call your refresh function
+                    viewModel.getCoins()
+
+                } else {
+                    // Scroll RecyclerView to the top first
+                    binding?.recycleCoins?.smoothScrollToPosition(0)
+                }
+            }
+
+
         }
 
 

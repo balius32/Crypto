@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.balius.coincap.model.model.Data
-import com.balius.coincap.model.repository.CoinRepository
+import com.balius.coincap.model.model.Coins.Data
+import com.balius.coincap.model.repository.coin.CoinRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -36,8 +36,12 @@ class CoinsViewModel(
                     val data =repository.getCoins()
                     data
                 }
-                Log.e("data", result.toString())
-                _Coins.value = result
+
+                if (result.isEmpty()){
+                    _isError.value = true
+                }else{
+                    _Coins.value = result
+                }
 
             }catch (e : Exception){
                 Log.e("data error", e.message.toString())

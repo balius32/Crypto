@@ -50,18 +50,17 @@
     </androidx.appcompat.widget.Toolbar>
 
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:background="#333333">
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipe_refresh_layout"
+        <ScrollView
+            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/toolbar"
-            android:background="#333333">
-            <ScrollView
-                android:id="@+id/scroll_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
+            android:layout_height="match_parent">
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -169,7 +168,94 @@
                         android:layout_height="match_parent" />
 
 
+                    <com.github.mikephil.charting.charts.CandleStickChart
+                        android:id="@+id/candle_chart"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone"/>
+
+
                 </RelativeLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_times"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rel_chart">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/img_line"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:paddingStart="@dimen/margin8"
+                        android:paddingEnd="@dimen/margin8"
+                        android:src="@drawable/baseline_stacked_line_chart_24"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/img_candle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:paddingStart="@dimen/margin8"
+                        android:paddingEnd="@dimen/margin8"
+                        android:src="@drawable/baseline_candlestick_chart_24"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/img_line"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/lbl_d1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:padding="4dp"
+                        android:text="d1"
+                        android:textColor="@color/yellow"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/img_candle"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.0" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/lbl_h12"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="h12"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:padding="4dp"/>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/lbl_h6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="h6"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/lbl_h12"
+                        app:layout_constraintStart_toEndOf="@+id/lbl_d1"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:padding="4dp"/>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/lbl_stats"
@@ -182,15 +268,17 @@
                     android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/rel_chart" />
+                    app:layout_constraintTop_toBottomOf="@id/layout_times" />
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
                     android:elevation="@dimen/margin8"
                     app:cardCornerRadius="@dimen/margin8"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/lbl_stats">
@@ -311,6 +399,33 @@
                             app:layout_constraintStart_toEndOf="@+id/lbl_volume"
                             app:layout_constraintTop_toBottomOf="@id/txt_max_supply" />
 
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/lbl_rsi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginStart="@dimen/margin8"
+                            android:layout_marginTop="16dp"
+                            android:text="RSI 14"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/lbl_volume" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/txt_rsi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/txt_marketcap"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="@dimen/margin8"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="1.0"
+                            app:layout_constraintStart_toEndOf="@+id/lbl_volume"
+                            app:layout_constraintTop_toBottomOf="@id/txt_volume" />
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.cardview.widget.CardView>
@@ -319,8 +434,8 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-            </ScrollView>
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
 </RelativeLayout>
