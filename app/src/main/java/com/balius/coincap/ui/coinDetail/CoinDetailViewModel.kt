@@ -104,7 +104,7 @@ class CoinDetailViewModel(
         }
     }
 
-    fun getPricesList(data: List<ChartData>) {
+    fun getPricesList(data: List<CandleChartData>) {
         viewModelScope.launch {
             try {
                 val result = withContext(Dispatchers.IO) {

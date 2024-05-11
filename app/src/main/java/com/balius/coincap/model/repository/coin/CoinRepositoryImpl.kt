@@ -3,6 +3,7 @@ package com.balius.coincap.model.repository.coin
 import android.util.Log
 import com.balius.coincap.model.api.CoinsApi
 import com.balius.coincap.model.model.Coins.Data
+import com.balius.coincap.model.model.chart.candle.CandleChartData
 import com.balius.coincap.model.model.chart.line.ChartData
 import org.apache.commons.math3.stat.StatUtils
 
@@ -88,11 +89,11 @@ class CoinRepositoryImpl(
         return 100.0 - (100.0 / (1.0 + rs))
     }
 
-    override suspend fun extractPrices(chartData: List<ChartData>): List<String> {
+    override suspend fun extractPrices(chartData: List<CandleChartData>): List<String> {
         val prices = mutableListOf<String>()
         for (item in chartData) {
-            item.priceUsd?.let { price ->
-                prices.add(price)
+            item.close?.let { price ->
+                prices.add(item.close.toString())
             }
         }
         return prices

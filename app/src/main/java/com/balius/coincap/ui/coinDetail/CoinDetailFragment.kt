@@ -22,6 +22,7 @@ import com.balius.coincap.model.model.chart.line.ChartData
 import com.github.mikephil.charting.charts.CandleStickChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.CandleData
 import com.github.mikephil.charting.data.CandleDataSet
 import com.github.mikephil.charting.data.CandleEntry
@@ -35,6 +36,7 @@ import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.Date
 import java.util.Locale
@@ -45,8 +47,12 @@ class CoinDetailFragment : Fragment() {
 
     private val viewModel: CoinDetailViewModel by viewModel()
     private lateinit var coinSymbol: String
+
     private var todayUnix: Long = 0
-    private var weekAgoUnix: Long = 0
+    private var yesterdayUnix: Long = 0
+    private var unix6HAgo: Long = 0
+    private var unix12HAgo: Long = 0
+
     private var isDailyChartSelected = true
     private var is6HChartSelected = false
     private var is12HChartSelected = false
@@ -68,12 +74,17 @@ class CoinDetailFragment : Fragment() {
         val args = CoinDetailFragmentArgs.fromBundle(requireArguments())
         val coinName = args.coin
 
-        todayUnix =  getCurrentUnixTime()
-        weekAgoUnix = getUnixTimeOneWeekAgo()
+        todayUnix = getCurrentUnixTime()
+        yesterdayUnix = getUnixTimeYesterday()
+        unix6HAgo = getUnixTime6HoursAgo()
+        unix12HAgo = getUnixTime12HoursAgo()
+
 
 
         viewModel.getDetails(coinName)
-        viewModel.getChartDetail(coinName, "d1")
+
+
+
 
 
         viewModel.detail.observe(viewLifecycleOwner) {
@@ -83,6 +94,8 @@ class CoinDetailFragment : Fragment() {
             binding?.txtRank?.text = it.rank
 
             coinSymbol = it.symbol.toString()
+            //charts
+            viewModel.getCandles(coinSymbol, yesterdayUnix, todayUnix, "daily")
 
 
             binding?.txtPrice?.text = "$${FormatNumber(it.priceUsd.toString())}"
@@ -107,9 +120,9 @@ class CoinDetailFragment : Fragment() {
             }
 
             binding?.txtSupply?.text = FormatStats(it.supply.toString())
-            if (it.maxSupply.toString().equals("_")){
+            if (it.maxSupply.toString().equals("_")) {
                 binding?.txtMaxSupply?.text = "_"
-            }else{
+            } else {
                 binding?.txtMaxSupply?.text = FormatStats(it.maxSupply.toString())
             }
 
@@ -118,6 +131,10 @@ class CoinDetailFragment : Fragment() {
 
         }
 
+
+
+
+       /* //not working
         viewModel.chartData.observe(viewLifecycleOwner) {
             viewModel.getPricesList(it)
             binding?.swipeRefreshLayout?.isRefreshing = false
@@ -129,13 +146,17 @@ class CoinDetailFragment : Fragment() {
             binding?.progress?.visibility = View.GONE
             binding?.imgCandle?.isClickable = true
             binding?.imgLine?.isClickable = true
-            showChart(it, binding!!.lineChart)
-        }
+            // showChart(it, binding!!.lineChart)
+        }*/
 
+
+        //calCulate Rsi
         viewModel.prices.observe(viewLifecycleOwner) {
             Log.e("prices ", it.toString())
             viewModel.calculateRSI(it, 14)
         }
+
+
         viewModel.rsi.observe(viewLifecycleOwner) {
             binding?.txtRsi?.text = it.toString()
         }
@@ -224,6 +245,7 @@ class CoinDetailFragment : Fragment() {
         }
 
         viewModel.candleData.observe(viewLifecycleOwner) {
+            viewModel.getPricesList(it)
             binding?.progress?.visibility = View.GONE
             binding?.imgCandle?.isClickable = true
             binding?.imgLine?.isClickable = true
@@ -231,9 +253,18 @@ class CoinDetailFragment : Fragment() {
             binding?.lblH12?.isClickable = true
             binding?.lblH6?.isClickable = true
             Log.e("chart data ", it.toString())
-            binding?.lineChart?.visibility = View.GONE
-            binding?.candleChart?.visibility = View.VISIBLE
-            showCandle(it)
+
+            if (isCandleChartSelected) {
+                binding?.lineChart?.visibility = View.GONE
+                binding?.candleChart?.visibility = View.VISIBLE
+                showCandle(it)
+            } else {
+                binding?.lineChart?.visibility = View.VISIBLE
+                binding?.candleChart?.visibility = View.GONE
+                showChart(it, binding!!.lineChart)
+            }
+
+
         }
 
         //img candle
@@ -282,7 +313,7 @@ class CoinDetailFragment : Fragment() {
                 binding?.lblD1?.isClickable = false
                 binding?.lblH12?.isClickable = false
                 binding?.lblH6?.isClickable = false
-                viewModel.getChartDetail(coinName, "d1")
+                viewModel.getCandles(coinSymbol, yesterdayUnix, todayUnix, "daily")
 
             } else if (is6HChartSelected) {
 
@@ -292,7 +323,7 @@ class CoinDetailFragment : Fragment() {
                 binding?.lblD1?.isClickable = false
                 binding?.lblH12?.isClickable = false
                 binding?.lblH6?.isClickable = false
-                viewModel.getChartDetail(coinName, "h6")
+                viewModel.getCandles(coinSymbol, unix6HAgo, todayUnix, "6h")
 
             } else if (is12HChartSelected) {
                 binding?.lblD1?.setTextColor(Color.WHITE)
@@ -301,7 +332,7 @@ class CoinDetailFragment : Fragment() {
                 binding?.lblD1?.isClickable = false
                 binding?.lblH12?.isClickable = false
                 binding?.lblH6?.isClickable = false
-                viewModel.getChartDetail(coinName, "h12")
+                viewModel.getCandles(coinSymbol, unix12HAgo, todayUnix, "12h")
             }
 
         } else {
@@ -312,7 +343,7 @@ class CoinDetailFragment : Fragment() {
                 binding?.lblD1?.isClickable = false
                 binding?.lblH12?.isClickable = false
                 binding?.lblH6?.isClickable = false
-                viewModel.getCandles(coinSymbol, weekAgoUnix,todayUnix, "D")
+                viewModel.getCandles(coinSymbol, yesterdayUnix, todayUnix, "daily")
 
             } else if (is6HChartSelected) {
 
@@ -322,7 +353,7 @@ class CoinDetailFragment : Fragment() {
                 binding?.lblD1?.isClickable = false
                 binding?.lblH12?.isClickable = false
                 binding?.lblH6?.isClickable = false
-                viewModel.getCandles(coinSymbol,  weekAgoUnix,todayUnix, "360")
+                viewModel.getCandles(coinSymbol, unix6HAgo, todayUnix, "6h")
 
             } else if (is12HChartSelected) {
                 binding?.lblD1?.setTextColor(Color.WHITE)
@@ -331,7 +362,7 @@ class CoinDetailFragment : Fragment() {
                 binding?.lblD1?.isClickable = false
                 binding?.lblH12?.isClickable = false
                 binding?.lblH6?.isClickable = false
-                viewModel.getCandles(coinSymbol, weekAgoUnix,todayUnix, "720")
+                viewModel.getCandles(coinSymbol, unix12HAgo, todayUnix, "12h")
             }
 
         }
@@ -353,27 +384,72 @@ class CoinDetailFragment : Fragment() {
     }
 
 
-    fun showChart(chartDataList: List<ChartData>, lineChart: LineChart) {
+    /* fun showChart(chartDataList: List<ChartData>, lineChart: LineChart) {
+         // Prepare data entries for the chart
+         val entries = ArrayList<Entry>()
+         for (data in chartDataList) {
+             data.time?.let { time ->
+                 data.priceUsd?.toFloat()?.let { price ->
+                     entries.add(Entry(time.toFloat(), price))
+                 }
+             }
+         }
+
+
+         val orange = ContextCompat.getColor(requireContext(), R.color.orange)
+         val deepOrange = ContextCompat.getColor(requireContext(), R.color.deep_orange)
+         // Create a dataset from the entries
+         val dataSet = LineDataSet(entries, "Price (USD)")
+         dataSet.color = orange
+         dataSet.setDrawCircles(false)
+         dataSet.setCircleColor(deepOrange)
+         dataSet.valueTextColor = Color.BLACK
+
+
+         // Create a LineData object from the dataset
+         val lineData = LineData(dataSet)
+
+         // Set data to the chart
+         lineChart.data = lineData
+
+         // Customize the appearance of the chart
+         lineChart.description.isEnabled = false
+         lineChart.setDrawGridBackground(false)
+
+
+         val xAxis = lineChart.xAxis
+         xAxis.position = XAxis.XAxisPosition.BOTTOM
+         xAxis.textColor = Color.BLACK
+         xAxis.valueFormatter = DayMonthValueFormatter()
+
+         val yAxisRight = lineChart.axisRight
+         yAxisRight.isEnabled = false
+
+         val yAxisLeft = lineChart.axisLeft
+         yAxisLeft.textColor = Color.BLACK
+
+         // Invalidate the chart to refresh
+         lineChart.invalidate()
+     }*/
+
+    fun showChart(chartDataList: List<CandleChartData>, lineChart: LineChart) {
         // Prepare data entries for the chart
         val entries = ArrayList<Entry>()
-        for (data in chartDataList) {
-            data.time?.let { time ->
-                data.priceUsd?.toFloat()?.let { price ->
-                    entries.add(Entry(time.toFloat(), price))
-                }
-            }
+        for ((index, data) in chartDataList.withIndex()) {
+            // Here, we're using the closing price for the chart
+            val closePrice = data.close
+            entries.add(Entry(index.toFloat(), closePrice))
         }
 
+        val orange = ContextCompat.getColor(lineChart.context, R.color.orange)
+        val deepOrange = ContextCompat.getColor(lineChart.context, R.color.deep_orange)
 
-        val orange = ContextCompat.getColor(requireContext(), R.color.orange)
-        val deepOrange = ContextCompat.getColor(requireContext(), R.color.deep_orange)
         // Create a dataset from the entries
-        val dataSet = LineDataSet(entries, "Price (USD)")
+        val dataSet = LineDataSet(entries, "Closing Price")
         dataSet.color = orange
         dataSet.setDrawCircles(false)
         dataSet.setCircleColor(deepOrange)
         dataSet.valueTextColor = Color.BLACK
-
 
         // Create a LineData object from the dataset
         val lineData = LineData(dataSet)
@@ -385,11 +461,11 @@ class CoinDetailFragment : Fragment() {
         lineChart.description.isEnabled = false
         lineChart.setDrawGridBackground(false)
 
-
         val xAxis = lineChart.xAxis
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.textColor = Color.BLACK
-        xAxis.valueFormatter = DayMonthValueFormatter()
+        // If you want to format X-axis labels differently, you can set a custom value formatter here
+        // xAxis.valueFormatter = CustomXAxisValueFormatter()
 
         val yAxisRight = lineChart.axisRight
         yAxisRight.isEnabled = false
@@ -436,6 +512,15 @@ class CoinDetailFragment : Fragment() {
         candleStickChart?.xAxis?.position = XAxis.XAxisPosition.BOTTOM
         candleStickChart?.xAxis?.setDrawGridLines(false)
 
+        val yAxis = candleStickChart?.axisLeft
+        yAxis?.setDrawGridLines(true) // Set true to show grid lines
+        //yAxis?.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART)
+        yAxis?.setDrawLabels(true) // Set true to show labels
+        yAxis?.setLabelCount(5, true) // Set label count as per your requirement
+
+        // Hide right Y-axis
+        candleStickChart?.axisRight?.isEnabled = false
+
         // Disable zoom
         candleStickChart?.setScaleEnabled(true)
 
@@ -447,15 +532,23 @@ class CoinDetailFragment : Fragment() {
         return unixTimeToday
     }
 
-    fun getUnixTimeOneWeekAgo(): Long {
-        val unixTimeToday = Instant.now().epochSecond
-
-
-        val unixTimeOneWeekAgo = unixTimeToday - (7 * 24 * 60 * 60)
-
-        return unixTimeOneWeekAgo
+    fun getUnixTimeYesterday(): Long {
+        val yesterday = LocalDateTime.now().minusDays(1)
+        val unixTime = yesterday.toEpochSecond(ZoneOffset.UTC)
+        return unixTime
     }
 
+    fun getUnixTime6HoursAgo(): Long {
+        val sixHoursAgo = LocalDateTime.now().minusHours(6)
+        val unixTime = sixHoursAgo.toEpochSecond(ZoneOffset.UTC)
+        return unixTime
+    }
+
+    fun getUnixTime12HoursAgo(): Long {
+        val twelveHoursAgo = LocalDateTime.now().minusHours(12)
+        val unixTime = twelveHoursAgo.toEpochSecond(ZoneOffset.UTC)
+        return unixTime
+    }
 
 }
 

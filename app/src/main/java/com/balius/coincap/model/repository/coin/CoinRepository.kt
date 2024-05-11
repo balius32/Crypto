@@ -14,5 +14,5 @@ interface CoinRepository {
 
 
     suspend fun calculateRSI (prices: List<String>, period: Int) : Double
-    suspend fun extractPrices (chartData: List<ChartData>) : List<String>
+    suspend fun extractPrices (chartData: List<CandleChartData>) : List<String>
 }

@@ -11,23 +11,23 @@ class CandleRepositoryImpl(
 ) : CandleRepository {
     override suspend fun getCandles(symbol: String, from: Long, to: Long, resolution: String): List<CandleChartData>? {
 
-        // val url2 = "${CANDLE_CHART_BASE_URL}?secret=${CANDLE_API_KEY}&exchange=binance&symbol=${symbol}/USDT&interval=${interval}"
-        val url = "${CANDLE_CHART_BASE_URL}?symbol=${symbol}IRT&resolution=D&from=${from}&to=${to}"
-        val url1 = "${CANDLE_CHART_BASE_URL}?symbol=${symbol}IRT&resolution=360&from=${from}&to=${to}"
-        val url2 = "${CANDLE_CHART_BASE_URL}?symbol=${symbol}IRT&resolution=720&from=${from}&to=${to}"
+
+        val url = "${CANDLE_CHART_BASE_URL}?symbol=${symbol}USDT&resolution=60&from=${from}&to=${to}"
+        val url1 = "${CANDLE_CHART_BASE_URL}?symbol=${symbol}USDT&resolution=5&from=${from}&to=${to}"
+        val url2 = "${CANDLE_CHART_BASE_URL}?symbol=${symbol}USDT&resolution=5&from=${from}&to=${to}"
 
         try {
 
             val result = when (resolution) {
-                "D" -> {
+                "daily" -> {
                     apiService.getCandles(url)
                 }
 
-                "360" -> {
+                "6h" -> {
                     apiService.getCandles(url1)
                 }
 
-                "720" -> {
+                "12h" -> {
                     apiService.getCandles(url2)
                 }
 
