@@ -2,7 +2,7 @@ package com.balius.coincap.model.repository.candle
 
 import android.util.Log
 import com.balius.coincap.model.api.CoinsApi
-import com.balius.coincap.model.model.chart.candle.CandleChartData
+import com.balius.coincap.model.model.chart.CandleChartData
 import com.balius.coincap.util.Constants.Companion.CANDLE_CHART_BASE_URL
 
 
@@ -56,9 +56,6 @@ class CandleRepositoryImpl(
             Log.e("error candle", e.message.toString())
             return emptyList()
         }
-
-
-
 
     }
 }

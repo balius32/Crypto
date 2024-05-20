@@ -87,11 +87,8 @@ class CoinsFragment : Fragment(), CoinsAdapter.CoinActionListener {
 
 
     override fun onCoinSelect(coinId: String) {
-
         val action = CoinsFragmentDirections.actionCoinsFragmentToCoinDetailFragment(coinId)
         findNavController().navigate(action)
-
-
     }
 
     override fun onDestroyView() {

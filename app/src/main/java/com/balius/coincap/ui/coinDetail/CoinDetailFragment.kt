@@ -4,9 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PorterDuff
-import android.opengl.Visibility
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -17,35 +15,28 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.balius.coincap.R
 import com.balius.coincap.databinding.FragmentCoinDetailBinding
-import com.balius.coincap.model.model.chart.candle.CandleChartData
-import com.balius.coincap.model.model.chart.line.ChartData
+import com.balius.coincap.model.model.chart.CandleChartData
 import com.github.mikephil.charting.charts.CandleStickChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.CandleData
 import com.github.mikephil.charting.data.CandleDataSet
 import com.github.mikephil.charting.data.CandleEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.formatter.ValueFormatter
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.lang.System.currentTimeMillis
 import java.text.DecimalFormat
-import java.text.SimpleDateFormat
 import java.time.Instant
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import java.util.Date
-import java.util.Locale
 
 class CoinDetailFragment : Fragment() {
     private var _binding: FragmentCoinDetailBinding? = null
     private val binding get() = _binding
 
     private val viewModel: CoinDetailViewModel by viewModel()
+
     private lateinit var coinSymbol: String
 
     private var todayUnix: Long = 0
@@ -54,6 +45,7 @@ class CoinDetailFragment : Fragment() {
     private var unix12HAgo: Long = 0
 
     private var isDailyChartSelected = true
+
     private var is6HChartSelected = false
     private var is12HChartSelected = false
     private var isCandleChartSelected = false
@@ -82,9 +74,6 @@ class CoinDetailFragment : Fragment() {
 
 
         viewModel.getDetails(coinName)
-
-
-
 
 
         viewModel.detail.observe(viewLifecycleOwner) {
@@ -132,33 +121,23 @@ class CoinDetailFragment : Fragment() {
         }
 
 
-
-
-       /* //not working
-        viewModel.chartData.observe(viewLifecycleOwner) {
-            viewModel.getPricesList(it)
-            binding?.swipeRefreshLayout?.isRefreshing = false
-            binding?.lineChart?.visibility = View.VISIBLE
-            binding?.candleChart?.visibility = View.GONE
-            binding?.lblD1?.isClickable = true
-            binding?.lblH12?.isClickable = true
-            binding?.lblH6?.isClickable = true
-            binding?.progress?.visibility = View.GONE
-            binding?.imgCandle?.isClickable = true
-            binding?.imgLine?.isClickable = true
-            // showChart(it, binding!!.lineChart)
-        }*/
-
-
         //calCulate Rsi
         viewModel.prices.observe(viewLifecycleOwner) {
-            Log.e("prices ", it.toString())
+
             viewModel.calculateRSI(it, 14)
         }
 
 
-        viewModel.rsi.observe(viewLifecycleOwner) {
-            binding?.txtRsi?.text = it.toString()
+
+
+        val gray = ContextCompat.getColor(requireContext(), R.color.darker_gray)
+        viewModel.rsi.observe(viewLifecycleOwner) {rsi->
+            binding?.txtRsi?.text = rsi.toString()
+
+            val formattedString = "%.2f".format(rsi)
+            binding?.rsiChart?.setSpeed(formattedString.toDouble())
+
+
         }
 
         binding?.imgBack?.setOnClickListener {
@@ -252,7 +231,6 @@ class CoinDetailFragment : Fragment() {
             binding?.lblD1?.isClickable = true
             binding?.lblH12?.isClickable = true
             binding?.lblH6?.isClickable = true
-            Log.e("chart data ", it.toString())
 
             if (isCandleChartSelected) {
                 binding?.lineChart?.visibility = View.GONE
@@ -263,7 +241,6 @@ class CoinDetailFragment : Fragment() {
                 binding?.candleChart?.visibility = View.GONE
                 showChart(it, binding!!.lineChart)
             }
-
 
         }
 
@@ -384,54 +361,6 @@ class CoinDetailFragment : Fragment() {
     }
 
 
-    /* fun showChart(chartDataList: List<ChartData>, lineChart: LineChart) {
-         // Prepare data entries for the chart
-         val entries = ArrayList<Entry>()
-         for (data in chartDataList) {
-             data.time?.let { time ->
-                 data.priceUsd?.toFloat()?.let { price ->
-                     entries.add(Entry(time.toFloat(), price))
-                 }
-             }
-         }
-
-
-         val orange = ContextCompat.getColor(requireContext(), R.color.orange)
-         val deepOrange = ContextCompat.getColor(requireContext(), R.color.deep_orange)
-         // Create a dataset from the entries
-         val dataSet = LineDataSet(entries, "Price (USD)")
-         dataSet.color = orange
-         dataSet.setDrawCircles(false)
-         dataSet.setCircleColor(deepOrange)
-         dataSet.valueTextColor = Color.BLACK
-
-
-         // Create a LineData object from the dataset
-         val lineData = LineData(dataSet)
-
-         // Set data to the chart
-         lineChart.data = lineData
-
-         // Customize the appearance of the chart
-         lineChart.description.isEnabled = false
-         lineChart.setDrawGridBackground(false)
-
-
-         val xAxis = lineChart.xAxis
-         xAxis.position = XAxis.XAxisPosition.BOTTOM
-         xAxis.textColor = Color.BLACK
-         xAxis.valueFormatter = DayMonthValueFormatter()
-
-         val yAxisRight = lineChart.axisRight
-         yAxisRight.isEnabled = false
-
-         val yAxisLeft = lineChart.axisLeft
-         yAxisLeft.textColor = Color.BLACK
-
-         // Invalidate the chart to refresh
-         lineChart.invalidate()
-     }*/
-
     fun showChart(chartDataList: List<CandleChartData>, lineChart: LineChart) {
         // Prepare data entries for the chart
         val entries = ArrayList<Entry>()
@@ -532,6 +461,7 @@ class CoinDetailFragment : Fragment() {
         return unixTimeToday
     }
 
+
     fun getUnixTimeYesterday(): Long {
         val yesterday = LocalDateTime.now().minusDays(1)
         val unixTime = yesterday.toEpochSecond(ZoneOffset.UTC)
@@ -550,14 +480,6 @@ class CoinDetailFragment : Fragment() {
         return unixTime
     }
 
+
 }
 
-class DayMonthValueFormatter : ValueFormatter() {
-    private val dateFormat = SimpleDateFormat("MM/dd", Locale.getDefault())
-
-    override fun getFormattedValue(value: Float): String {
-        // Convert timestamp to formatted date string
-        val date = Date(value.toLong())
-        return dateFormat.format(date)
-    }
-}

@@ -1,4 +1,4 @@
-package com.balius.coincap.model.model.chart.candle
+package com.balius.coincap.model.model.chart
 
 data class CandleResponse(
     val s: String,    // Assuming "s" is always present and of type String
@@ -8,7 +8,4 @@ data class CandleResponse(
     val h: List<Double>,    // List of highest prices
     val l: List<Double>,    // List of lowest prices
     val v: List<Double>    // List of volumes
-
-
-
 )

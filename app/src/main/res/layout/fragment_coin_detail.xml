@@ -172,7 +172,7 @@
                         android:id="@+id/candle_chart"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
 
                 </RelativeLayout>
@@ -231,19 +231,20 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
+                        android:padding="4dp"
                         android:text="h12"
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:padding="4dp"/>
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/lbl_h6"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:padding="4dp"
                         android:text="h6"
                         android:textColor="@color/white"
                         android:textSize="18sp"
@@ -251,8 +252,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/lbl_h12"
                         app:layout_constraintStart_toEndOf="@+id/lbl_d1"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:padding="4dp"/>
+                        app:layout_constraintTop_toTopOf="parent" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -271,17 +271,17 @@
                     app:layout_constraintTop_toBottomOf="@id/layout_times" />
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/card_view"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
                     android:elevation="@dimen/margin8"
                     app:cardCornerRadius="@dimen/margin8"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/lbl_stats">
+                    app:layout_constraintTop_toBottomOf="@id/lbl_stats"
+                    tools:layout_editor_absoluteY="386dp">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
@@ -429,6 +429,38 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.cardview.widget.CardView>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/card_view">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/lbl_rsi_chart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:text="RSI-14"
+                        android:textColor="@color/white"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:layout_alignParentTop="true"
+                        android:layout_margin="@dimen/margin8"/>
+
+
+
+                    <com.balius.coincap.ui.coinDetail.customChartView.CustomChartView
+                        android:id="@+id/rsi_chart"
+                        android:layout_width="match_parent"
+                        android:layout_height="280dp"
+                        android:layout_below="@id/lbl_rsi_chart"/>
+                </RelativeLayout>
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

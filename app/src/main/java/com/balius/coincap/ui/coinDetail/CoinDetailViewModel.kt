@@ -6,8 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.balius.coincap.model.model.Coins.Data
-import com.balius.coincap.model.model.chart.candle.CandleChartData
-import com.balius.coincap.model.model.chart.line.ChartData
+import com.balius.coincap.model.model.chart.CandleChartData
 import com.balius.coincap.model.repository.candle.CandleRepository
 import com.balius.coincap.model.repository.coin.CoinRepository
 import kotlinx.coroutines.Dispatchers
@@ -22,10 +21,6 @@ class CoinDetailViewModel(
     private val _detail = MutableLiveData<Data>()
     val detail: LiveData<Data>
         get() = _detail
-
-    private val _chartData = MutableLiveData<List<ChartData>>()
-    val chartData: LiveData<List<ChartData>>
-        get() = _chartData
 
     private val _rsi = MutableLiveData<Double>()
     val rsi: LiveData<Double>
@@ -70,24 +65,6 @@ class CoinDetailViewModel(
         }
     }
 
-
-    fun getChartDetail(coinName: String, duration: String) {
-        viewModelScope.launch {
-            try {
-                val result = withContext(Dispatchers.IO) {
-                    val chart = repository.getCoinChartData(coinName, duration)
-                    chart
-                }
-                _chartData.value = result
-
-            } catch (e: Exception) {
-                Log.e("chart error", e.message.toString())
-                _isError.value = true
-            }
-        }
-    }
-
-
     fun calculateRSI(prices: List<String>, period: Int) {
         viewModelScope.launch {
             try {
@@ -118,8 +95,6 @@ class CoinDetailViewModel(
         }
 
     }
-
-
     fun getCandles(symbol: String, from: Long, to: Long, resolution: String) {
         viewModelScope.launch {
             try {

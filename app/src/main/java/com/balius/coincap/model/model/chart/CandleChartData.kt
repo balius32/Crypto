@@ -1,4 +1,4 @@
-package com.balius.coincap.model.model.chart.candle
+package com.balius.coincap.model.model.chart
 
 import com.google.gson.annotations.SerializedName
 

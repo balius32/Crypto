@@ -3,8 +3,7 @@ package com.balius.coincap.model.repository.coin
 import android.util.Log
 import com.balius.coincap.model.api.CoinsApi
 import com.balius.coincap.model.model.Coins.Data
-import com.balius.coincap.model.model.chart.candle.CandleChartData
-import com.balius.coincap.model.model.chart.line.ChartData
+import com.balius.coincap.model.model.chart.CandleChartData
 import org.apache.commons.math3.stat.StatUtils
 
 class CoinRepositoryImpl(
@@ -15,14 +14,12 @@ class CoinRepositoryImpl(
     override suspend fun getCoins(): List<Data> {
 
         val request = apiService.getCoins()
-        Log.e("get coin repository", request.toString())
 
         return if (request.body() != null) {
             request.body()!!.data
         } else {
             emptyList()
         }
-
     }
 
     override suspend fun getCoinDetail(coinName: String): Data {
@@ -37,15 +34,9 @@ class CoinRepositoryImpl(
             Log.e("req error", e.message.toString())
             return null!!
         }
-
-
     }
 
-    override suspend fun getCoinChartData(coinId: String, duration: String): List<ChartData> {
 
-        val request = apiService.getCoinHistory(coinId, duration)
-        return request.data
-    }
 
     override suspend fun calculateRSI(prices: List<String>, period: Int): Double {
 
