@@ -22,13 +22,11 @@ class RetrofitInstance {
                 .addInterceptor(loggingInterceptor)
                 .build()
 
-
             val retrofit = Retrofit.Builder()
                 .baseUrl(LINE_CHART_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()
-
             return retrofit.create(CoinsApi::class.java)
         }
 

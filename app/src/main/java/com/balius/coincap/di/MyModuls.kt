@@ -22,26 +22,4 @@ val MyModules = module {
     viewModel { CoinDetailViewModel(get(), get()) }
 }
 
-//single { RetrofitInstance.createCoinsRetrofit() }
 
-
-/*
-val candleModule = module {
-    single { createCandleRetrofit() }
-    factory<CandleApi> { get<Retrofit>().create(CandleApi::class.java) }
-    single<CandleRepository> { CandleRepositoryImpl(get()) }
-}
-val coinsModule = module {
-    single { createCoinsRetrofit() }
-    factory<CoinsApi> { get<Retrofit>().create(CoinsApi::class.java) }
-    single<CoinRepository> { CoinRepositoryImpl(get()) }
-}
-val viewModelModule = module {
-    viewModel { CoinsViewModel(get()) }
-    viewModel { CoinDetailViewModel(get(), get()) }
-
-}
-
-// Combine modules
-val myModules = listOf(candleModule,coinsModule, viewModelModule)
-*/

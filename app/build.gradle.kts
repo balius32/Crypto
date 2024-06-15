@@ -91,7 +91,7 @@ dependencies {
     implementation ("org.apache.commons:commons-math3:3.6.1")
 
 
-    implementation ("com.github.anastr:speedviewlib:1.6.1")
+    
 
 
 
